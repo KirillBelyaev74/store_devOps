@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-user-deployment
+spec:
+  selector:
+    matchLabels:
+      applicationFullName: store-user
+      application: user
+  template:
+    metadata:
+      labels:
+        applicationFullName: store-user
+        application: user
+    spec:
+      containers:
+        - name: store-user
+          image: kirbel74/user
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 8083
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: "500m"
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: store-user-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: store-user-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: store-user-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: store-user-secret
+                  key: POSTGRES_URL
